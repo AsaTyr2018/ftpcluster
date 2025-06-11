@@ -12,6 +12,10 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 
 echo "Installing FTPCluster to $DEST_DIR"
 
+# Ensure required system packages are available
+apt-get update -y
+apt-get install -y python3 python3-venv python3-pip git rsync >/dev/null
+
 if [ -d "$SCRIPT_DIR/.git" ]; then
   echo "Detected git repository at $SCRIPT_DIR"
   SRC_DIR="$SCRIPT_DIR"
