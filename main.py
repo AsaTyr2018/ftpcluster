@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from passlib.hash import bcrypt
 
 from security import encrypt_value, decrypt_value, sign_username, verify_username
@@ -15,6 +16,7 @@ app = FastAPI()
 Base.metadata.create_all(bind=engine)
 
 templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/", response_class=HTMLResponse)
