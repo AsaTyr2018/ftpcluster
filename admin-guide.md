@@ -22,36 +22,36 @@ The `MASTER_URL` must point to the running instance so slave agents can post tel
 
 ---
 
-## Vorbereitung
+## Preparation
 
-Beim Anlegen eines neuen Servers liefert der Master ein Shell-Skript, das auf
-dem Zielsystem als `root` ausgeführt wird. Dieses Skript
+When adding a new server, the master provides a shell script that must be run on
+the target system as `root`. This script
 
-1. legt den angegebenen Admin-Benutzer an und sperrt dessen Passwort,
-2. trägt ihn mit `NOPASSWD` in `/etc/sudoers.d/` ein,
-3. erzeugt ein SSH-Schlüsselpaar und sendet den privaten Schlüssel an den Master.
+1. creates the specified admin user and locks its password,
+2. adds the user to `/etc/sudoers.d/` with `NOPASSWD`,
+3. generates an SSH key pair and sends the private key to the master.
 
-Der Master speichert den Schlüssel für die zukünftige Kommunikation und
-installiert danach automatisch die benötigten Pakete sowie die Agents.
+The master stores the key for future communication and then automatically installs
+the required packages and agents.
 
-Beispielablauf:
+Example workflow:
 
 ```bash
-curl -F alias=meinserver -F host=10.0.0.5 http://MASTER/servers > setup.sh
+curl -F alias=myserver -F host=10.0.0.5 http://MASTER/servers > setup.sh
 sudo bash setup.sh
 ```
 
-Nach Ausführung des Skripts erscheint der Server in der Liste.
+After running the script, the server will appear in the list.
 
 ---
 
 ## 2. Registering a Server
 
 1. Log in as admin and open **Servers**.
-2. Choose **Add** and gib Host sowie Alias an.
-3. Speichere das ausgegebene Skript auf dem Zielserver und führe es als `root` aus.
-4. Danach installiert der Master automatisch die benötigten Pakete und startet die Agents (datalink-Port 9000).
-5. Der neue Server erscheint anschließend in der Liste und zeigt seine letzte Speicherauslastung.
+2. Choose **Add** and provide host and alias.
+3. Save the generated script on the target server and run it as `root`.
+4. The master then installs the required packages and starts the agents (datalink port 9000).
+5. The new server will appear in the list and show its last reported memory usage.
 
 ---
 
