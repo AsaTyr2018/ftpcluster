@@ -3,6 +3,11 @@
 **One portal. Many FTP servers.**  
 FTPCluster bundles user accounts, permissions and proxy access into a single dark-themed web UI.
 
+## Latest Updates
+- Remote setup script automatically installs slave and datalink agents via SSH.
+- Added datalink agent for remote user creation.
+- Documentation translated to English.
+
 ---
 
 ## Highlights
@@ -19,6 +24,7 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 ---
 
 ## Quick Start
+(See `admin-guide.md` for detailed instructions.)
 
 1. Install dependencies
 ```bash
@@ -43,9 +49,10 @@ curl http://localhost:8080/
 
 ## Using the System
 
-1. Log in as admin and add your first server. The agent is uploaded automatically and begins reporting memory usage.
-2. Create users and assign them to servers.
-3. Users log in and see their permitted servers as folders.
+1. Log in as admin and open **Servers**. Generate the setup script and run it on the target machine.
+2. The script installs slave and datalink agents which start reporting memory usage.
+3. Create users and assign them to servers.
+4. Users log in and see their permitted servers as folders.
 
 Example layout for `user1`:
 ```
@@ -68,6 +75,8 @@ ftpcluster/
 ├── server_agent.py  # Installs and starts slave and datalink agents
 ├── slave_agent.py   # Reports telemetry to MASTER_URL
 ├── datalink_agent.py # Accepts user creation requests
+├── admin-guide.md   # Detailed administrator manual
+├── user-guide.md    # Short manual for end users
 ├── templates/       # Jinja2 HTML templates
 ├── static/          # CSS and JavaScript
 └── README.md
