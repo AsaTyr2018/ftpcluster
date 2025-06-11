@@ -32,13 +32,13 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 Deploy the master server automatically with a single command:
 
 ```bash
-curl -s https://raw.githubusercontent.com/AsaTyr2018/ftpcluster/main/setup_master.sh | sudo bash
+curl -s https://raw.githubusercontent.com/AsaTyr2018/ftpcluster/main/scripts/setup_master.sh | sudo bash
 ```
 
 ---
 
 ## Quick Start
-(See `admin-guide.md` for detailed instructions.)
+(See `docs/admin-guide.md` for detailed instructions.)
 
 1. Install dependencies
 ```bash
@@ -84,13 +84,20 @@ ftpcluster/
 ├── main.py          # FastAPI application
 ├── db.py            # SQLite initialization
 ├── models.py        # Database models
+├── security.py      # Session and crypto helpers
 ├── ftp_sync.py      # User management on remote servers
 ├── proxy.py         # Proxy endpoint implementation
-├── server_agent.py  # Installs and starts slave and datalink agents
-├── slave_agent.py   # Reports telemetry to MASTER_URL
-├── datalink_agent.py # Accepts user creation requests
-├── admin-guide.md   # Detailed administrator manual
-├── user-guide.md    # Short manual for end users
+├── agents/
+│   ├── server_agent.py  # Installs and starts remote agents
+│   ├── slave_agent.py   # Reports telemetry to MASTER_URL
+│   └── datalink_agent.py # Accepts user creation requests
+├── scripts/
+│   ├── setup_master.sh  # Initial deployment
+│   └── update_master.sh # Upgrade existing installation
+├── docs/
+│   ├── admin-guide.md   # Detailed administrator manual
+│   ├── user-guide.md    # Short manual for end users
+│   └── agent.md         # Technical reference
 ├── templates/       # Jinja2 HTML templates
 ├── static/          # CSS and JavaScript
 └── README.md
