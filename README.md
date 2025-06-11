@@ -19,7 +19,7 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 
 ## Quick Start
 
-1. Install dependencies (now includes `python-multipart`)
+1. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
