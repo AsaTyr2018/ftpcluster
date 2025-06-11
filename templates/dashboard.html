@@ -7,6 +7,10 @@
 <body>
     <div class="container">
         <h1>Welcome {{ user.username }}</h1>
+        <nav>
+            <a href="/servers">Servers</a> |
+            <a href="/users">Users</a>
+        </nav>
         <h2>Your servers</h2>
         <ul>
             {% for perm in permissions %}
@@ -16,5 +20,6 @@
             {% endfor %}
         </ul>
     </div>
+    <footer>&copy; Lenz-Service Network</footer>
 </body>
 </html>

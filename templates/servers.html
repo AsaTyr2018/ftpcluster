@@ -7,6 +7,10 @@
 <body>
     <div class="container">
         <h1>Servers</h1>
+        <nav>
+            <a href="/dashboard">Dashboard</a> |
+            <a href="/users">Users</a>
+        </nav>
         <form action="/servers" method="post">
             <input type="text" name="alias" placeholder="Alias" required>
             <input type="text" name="host" placeholder="Host" required>
@@ -22,6 +26,8 @@
             {% endfor %}
         </ul>
         {% endif %}
+        <p><a href="/dashboard">Back to Dashboard</a></p>
     </div>
+    <footer>&copy; Lenz-Service Network</footer>
 </body>
 </html>
