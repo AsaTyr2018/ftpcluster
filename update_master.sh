@@ -10,12 +10,23 @@ DEST_DIR=/opt/ftpcluster
 REPO_URL="https://github.com/AsaTyr2018/ftpcluster.git"
 BACKUP_DB=/tmp/ftpcluster_backup.db
 
+DB_FILE="$DEST_DIR/ftpcluster.db"
+
+export BACKUP_DB DEST_DIR
+
 echo "Updating FTPCluster in $DEST_DIR"
 
 # Stop running service if present
 if systemctl is-active --quiet ftpcluster.service; then
   systemctl stop ftpcluster.service
 fi
+
+# Backup existing database before modifying the repository
+if [ -s "$DB_FILE" ]; then
+  echo "Backing up database to $BACKUP_DB"
+  cp "$DB_FILE" "$BACKUP_DB"
+fi
+
 
 if [ -d "$DEST_DIR/.git" ]; then
   echo "Pulling latest changes"
@@ -37,12 +48,10 @@ source venv/bin/activate
 pip install --upgrade pip >/dev/null
 pip install -r requirements.txt >/dev/null
 
-# Backup and migrate database if it exists and is not empty
-DB_FILE="$DEST_DIR/ftpcluster.db"
-if [ -s "$DB_FILE" ]; then
-  echo "Backing up database to $BACKUP_DB"
-  cp "$DB_FILE" "$BACKUP_DB"
-  rm "$DB_FILE"
+
+# Migrate database if backup exists or initialize new one
+if [ -s "$BACKUP_DB" ]; then
+  rm -f "$DB_FILE"
 
   python3 - <<PY
 from db import Base, engine
@@ -53,8 +62,7 @@ PY
 import sqlite3, os
 backup = os.environ['BACKUP_DB']
 newdb = os.path.join(os.environ['DEST_DIR'], 'ftpcluster.db')
-if not os.path.exists(backup):
-    raise SystemExit('Backup database missing')
+
 src = sqlite3.connect(backup)
 src.row_factory = sqlite3.Row
 dst = sqlite3.connect(newdb)
