@@ -3,10 +3,15 @@
 **One portal. Many FTP servers.**  
 FTPCluster bundles user accounts, permissions and proxy access into a single dark-themed web UI.
 
+> **WARNING:** This repository is a work in progress and not ready for production use!
+
 ## Latest Updates
 - Remote setup script automatically installs slave and datalink agents via SSH.
 - Added datalink agent for remote user creation.
 - Documentation translated to English.
+- New `update_master.sh` script upgrades existing installations.
+- UI now has navigation links, footers and a user list.
+- Bcrypt version pinned to maintain passlib compatibility.
 
 ---
 
