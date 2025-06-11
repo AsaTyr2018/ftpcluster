@@ -11,6 +11,8 @@
 * Central authentication with password hashing
 * Access via a single IP through proxy routing
 * Virtual subfolders for users based on server assignment
+* Automatic installation of a slave agent via SSH when adding servers
+* Telemetry endpoint displaying memory usage reported by agents
 
 ---
 
@@ -65,6 +67,14 @@ Requests such as:
 ```
 
 are internally routed to Server2.
+
+---
+
+## Agent and Telemetry
+
+When a new server is registered the application connects via SSH and uploads
+`slave_agent.py`. The agent periodically sends memory usage information back to
+`/telemetry`. The server management page shows the last reported value.
 
 ---
 
