@@ -1,38 +1,38 @@
 # Admin Guide
 
-Dieses Dokument beschreibt, wie die FTPCluster-Instanz installiert wird und wie Administratoren neue FTP-Server einbinden.
+This document describes how to install the FTPCluster instance and how administrators can add new FTP servers.
 
-## Installation des Servers
+## Installing the server
 
-1. **Voraussetzungen**
-   - Python 3.11 oder neuer
-   - Zugriff auf mindestens einen FTP- oder SFTP-Server
+1. **Prerequisites**
+   - Python 3.11 or newer
+   - Access to at least one FTP or SFTP server
 
-2. **Abhängigkeiten installieren**
+2. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Umgebungsvariablen setzen**
+3. **Set environment variables**
    ```bash
    export SECRET_KEY=<zufaelliger_wert>
    export FERNET_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')
    ```
 
-4. **Datenbank erstellen und Anwendung starten**
+4. **Create the database and start the application**
    ```bash
    uvicorn main:app --host 0.0.0.0 --port 8080
    ```
-   Beim ersten Start wird die SQLite-Datenbank `ftpcluster.db` automatisch angelegt.
+   On first start the SQLite database `ftpcluster.db` is created automatically.
 
-## Hinzufügen neuer Server
+## Adding new servers
 
-1. Melden Sie sich mit einem Admin-Account im Webinterface an.
-2. Öffnen Sie die Seite **Serververwaltung** (`/servers`).
-3. Tragen Sie dort Alias, Hostname sowie die Admin-Zugangsdaten des Zielservers ein.
-4. Nach dem Speichern erscheint der Server in der Liste und kann Benutzern zugewiesen werden.
+1. Log in with an admin account in the web interface.
+2. Open the **Server management** page (`/servers`).
+3. Enter alias, host name and the admin credentials of the target server.
+4. After saving, the server appears in the list and can be assigned to users.
 
-Alternativ können Server auch per API angelegt werden:
+Servers can also be created via the API:
 ```bash
 curl -X POST -F alias=<alias> -F host=<host> -F admin_user=<user> -F admin_pass=<pass> http://<server>:8080/servers
 ```
