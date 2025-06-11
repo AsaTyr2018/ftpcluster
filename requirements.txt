@@ -3,6 +3,7 @@ uvicorn
 sqlalchemy
 jinja2
 passlib[bcrypt]
+bcrypt<4
 cryptography
 itsdangerous
 paramiko
