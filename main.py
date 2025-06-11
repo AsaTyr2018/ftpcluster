@@ -11,7 +11,7 @@ from db import Base, engine, get_db
 from sqlalchemy.orm import Session
 from models import User, Server, Permission
 from proxy import proxy_ftp
-from server_agent import install_agent
+from server_agent import install_agent, generate_setup_script
 from ftp_sync import create_user_via_link
 
 app = FastAPI()
@@ -67,17 +67,13 @@ async def create_user(username: str = Form(...), password: str = Form(...), db: 
 
 
 @app.post("/servers")
-async def create_server(alias: str = Form(...), host: str = Form(...), admin_user: str = Form(...), admin_pass: str = Form(...), db: Session = Depends(get_db)):
-    enc_pass = encrypt_value(admin_pass)
-    srv = Server(alias=alias, host=host, admin_user=admin_user, admin_pass=enc_pass)
+async def create_server(alias: str = Form(...), host: str = Form(...), admin_user: str = Form("ftpadmin"), db: Session = Depends(get_db)):
+    srv = Server(alias=alias, host=host, admin_user=admin_user, admin_pass="")
     db.add(srv)
     db.commit()
     db.refresh(srv)
-    try:
-        install_agent(srv)
-    except Exception:
-        pass
-    return {"id": srv.id, "alias": srv.alias}
+    script = generate_setup_script(srv)
+    return HTMLResponse(content=script, media_type="text/plain")
 
 
 @app.get("/servers", response_class=HTMLResponse)
@@ -103,6 +99,20 @@ async def create_permission(user_id: int = Form(...), server_id: int = Form(...)
     except Exception:
         pass
     return {"id": perm.id}
+
+
+@app.post("/register_key")
+async def register_key(alias: str = Form(...), key: str = Form(...), db: Session = Depends(get_db)):
+    srv = db.query(Server).filter_by(alias=alias).first()
+    if not srv:
+        return {"status": "unknown"}
+    srv.ssh_key = encrypt_value(key)
+    db.commit()
+    try:
+        install_agent(srv, key=key)
+    except Exception:
+        pass
+    return {"status": "ok"}
 
 
 class Telemetry(BaseModel):

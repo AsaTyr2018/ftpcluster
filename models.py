@@ -18,6 +18,7 @@ class Server(Base):
     host = Column(String, nullable=False)
     admin_user = Column(String, nullable=False)
     admin_pass = Column(String, nullable=False)
+    ssh_key = Column(String, nullable=True)
     memory_usage = Column(Integer, default=0)
 
     permissions = relationship("Permission", back_populates="server")
