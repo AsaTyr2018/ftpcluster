@@ -5,6 +5,7 @@ from ftplib import FTP
 
 from db import SessionLocal
 from models import Permission, Server
+from security import decrypt_value
 
 
 def get_permission(db, username: str, srv_alias: str):
@@ -27,7 +28,8 @@ def proxy_ftp(username: str, srv_alias: str, path: str):
     db.close()
 
     ftp = FTP(srv.host)
-    ftp.login(username, perm.user_pass)
+    user_pass = decrypt_value(perm.user_pass)
+    ftp.login(username, user_pass)
     bio = io.BytesIO()
     ftp.retrbinary(f"RETR {path}", bio.write)
     ftp.quit()
