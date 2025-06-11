@@ -22,6 +22,15 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 | Modern Interface   | Comfortable dark theme for daily use.                                 |
 
 ---
+## Installation via Script
+
+Deploy the master server automatically with a single command:
+
+```bash
+curl -s https://raw.githubusercontent.com/AsaTyr2018/ftpcluster/main/setup_master.sh | sudo bash
+```
+
+---
 
 ## Quick Start
 (See `admin-guide.md` for detailed instructions.)
