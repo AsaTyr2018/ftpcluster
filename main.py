@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from models import User, Server, Permission
 from proxy import proxy_ftp
 from server_agent import install_agent
+from ftp_sync import create_user_via_link
 
 app = FastAPI()
 
@@ -92,6 +93,15 @@ async def create_permission(user_id: int = Form(...), server_id: int = Form(...)
     db.add(perm)
     db.commit()
     db.refresh(perm)
+    server = db.query(Server).filter_by(id=server_id).first()
+    try:
+        create_user_via_link(
+            db.query(User).filter_by(id=user_id).first().username,
+            user_pass,
+            server,
+        )
+    except Exception:
+        pass
     return {"id": perm.id}
 
 

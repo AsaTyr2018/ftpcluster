@@ -26,8 +26,9 @@ The `MASTER_URL` must point to the running instance so slave agents can post tel
 
 1. Log in as admin and open **Servers**.
 2. Choose **Add** and provide host, alias and credentials.
-3. On save the agent is copied to the server via SSH and started automatically.
-4. The new server appears in the list showing its last reported memory usage.
+3. On save the master installs Python and an FTP server on the target, copies both agents and starts them.
+4. The datalink agent listens on port `9000` so new users can be created remotely.
+5. The new server appears in the list showing its last reported memory usage.
 
 ---
 

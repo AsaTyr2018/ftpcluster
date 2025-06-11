@@ -11,7 +11,8 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 |--------------------|-----------------------------------------------------------------------|
 | Unified Proxy      | Reach all managed servers through one IP address.                     |
 | Central Accounts   | Manage users and their permissions in one place.                      |
-| Automatic Agents   | Servers receive a telemetry agent via SSH on registration.            |
+| Automatic Agents   | Servers receive telemetry and datalink agents via SSH on registration. |
+| Zero-Touch Setup   | Python environment and FTP server are installed automatically. |
 | Memory Dashboard   | Agents post RAM usage to the `/telemetry` endpoint.                   |
 | Modern Interface   | Comfortable dark theme for daily use.                                 |
 
@@ -64,8 +65,9 @@ ftpcluster/
 ├── models.py        # Database models
 ├── ftp_sync.py      # User management on remote servers
 ├── proxy.py         # Proxy endpoint implementation
-├── server_agent.py  # Installs and starts slave agents
+├── server_agent.py  # Installs and starts slave and datalink agents
 ├── slave_agent.py   # Reports telemetry to MASTER_URL
+├── datalink_agent.py # Accepts user creation requests
 ├── templates/       # Jinja2 HTML templates
 ├── static/          # CSS and JavaScript
 └── README.md
