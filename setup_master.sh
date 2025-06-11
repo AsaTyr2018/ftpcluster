@@ -7,12 +7,25 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 DEST_DIR=/opt/ftpcluster
-SRC_DIR=$(cd "$(dirname "$0")" && pwd)
+REPO_URL="https://github.com/AsaTyr2018/ftpcluster.git"
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 
 echo "Installing FTPCluster to $DEST_DIR"
 
-mkdir -p "$DEST_DIR"
-rsync -a --exclude='.git' "$SRC_DIR/" "$DEST_DIR/"
+if [ -d "$SCRIPT_DIR/.git" ]; then
+  echo "Detected git repository at $SCRIPT_DIR"
+  SRC_DIR="$SCRIPT_DIR"
+  mkdir -p "$DEST_DIR"
+  rsync -a --exclude='.git' "$SRC_DIR/" "$DEST_DIR/"
+else
+  SRC_DIR="$DEST_DIR"
+  if [ ! -d "$DEST_DIR/.git" ]; then
+    echo "Cloning repository from $REPO_URL to $DEST_DIR"
+    git clone "$REPO_URL" "$DEST_DIR"
+  else
+    echo "Using existing repository at $DEST_DIR"
+  fi
+fi
 
 cd "$DEST_DIR"
 
