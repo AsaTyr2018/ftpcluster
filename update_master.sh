@@ -9,6 +9,7 @@ fi
 DEST_DIR=/opt/ftpcluster
 REPO_URL="https://github.com/AsaTyr2018/ftpcluster.git"
 BACKUP_DB=/tmp/ftpcluster_backup.db
+
 DB_FILE="$DEST_DIR/ftpcluster.db"
 
 export BACKUP_DB DEST_DIR
@@ -25,6 +26,7 @@ if [ -s "$DB_FILE" ]; then
   echo "Backing up database to $BACKUP_DB"
   cp "$DB_FILE" "$BACKUP_DB"
 fi
+
 
 if [ -d "$DEST_DIR/.git" ]; then
   echo "Pulling latest changes"
@@ -46,17 +48,21 @@ source venv/bin/activate
 pip install --upgrade pip >/dev/null
 pip install -r requirements.txt >/dev/null
 
+
 # Migrate database if backup exists or initialize new one
 if [ -s "$BACKUP_DB" ]; then
   rm -f "$DB_FILE"
+
   python3 - <<PY
 from db import Base, engine
 Base.metadata.create_all(bind=engine)
 PY
+
   python3 - <<'PY'
 import sqlite3, os
 backup = os.environ['BACKUP_DB']
 newdb = os.path.join(os.environ['DEST_DIR'], 'ftpcluster.db')
+
 src = sqlite3.connect(backup)
 src.row_factory = sqlite3.Row
 dst = sqlite3.connect(newdb)
@@ -89,4 +95,6 @@ fi
 
 systemctl daemon-reload
 systemctl start ftpcluster.service
+
 echo "Update complete"
+
