@@ -1,38 +1,45 @@
-# Admin Guide
+# FTPCluster Administration
 
-This document describes how to install the FTPCluster instance and how administrators can add new FTP servers.
+Welcome, administrator! This guide covers server installation, agent handling and common tasks.
 
-## Installing the server
+---
 
-1. **Prerequisites**
-   - Python 3.11 or newer
-   - Access to at least one FTP or SFTP server
+## 1. Installation
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Requirements
+- Python 3.11+
+- Access to one or more FTP/SFTP servers
 
-3. **Set environment variables**
-   ```bash
-   export SECRET_KEY=<zufaelliger_wert>
-   export FERNET_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')
-   ```
-
-4. **Create the database and start the application**
-   ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8080
-   ```
-   On first start the SQLite database `ftpcluster.db` is created automatically.
-
-## Adding new servers
-
-1. Log in with an admin account in the web interface.
-2. Open the **Server management** page (`/servers`).
-3. Enter alias, host name and the admin credentials of the target server.
-4. After saving, the server appears in the list and can be assigned to users.
-
-Servers can also be created via the API:
+### Steps
 ```bash
-curl -X POST -F alias=<alias> -F host=<host> -F admin_user=<user> -F admin_pass=<pass> http://<server>:8080/servers
+pip install -r requirements.txt
+export SECRET_KEY=<random>
+export FERNET_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')
+export MASTER_URL=http://<this_host>:8080
+uvicorn main:app --host 0.0.0.0 --port 8080
 ```
+The `MASTER_URL` must point to the running instance so slave agents can post telemetry.
+
+---
+
+## 2. Registering a Server
+
+1. Log in as admin and open **Servers**.
+2. Choose **Add** and provide host, alias and credentials.
+3. On save the agent is copied to the server via SSH and started automatically.
+4. The new server appears in the list showing its last reported memory usage.
+
+---
+
+## 3. Managing Users
+
+- Use the **Users** page to create accounts and assign servers.
+- Users only see the servers you select.
+
+---
+
+## 4. Monitoring
+
+The **Servers** page displays telemetry from agents. If a server stops reporting, check connectivity or reinstall the agent from the same page.
+
+Enjoy your streamlined FTP management!

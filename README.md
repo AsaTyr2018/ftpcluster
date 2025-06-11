@@ -1,121 +1,74 @@
 # FTPCluster
 
-**Central FTP user management with proxy access to multiple servers through a single IP address.**
+**One portal. Many FTP servers.**  
+FTPCluster bundles user accounts, permissions and proxy access into a single dark-themed web UI.
 
 ---
 
-## Features
+## Highlights
 
-* Web interface for managing users and servers
-* User access rights configurable per server
-* Central authentication with password hashing
-* Access via a single IP through proxy routing
-* Virtual subfolders for users based on server assignment
-* Automatic installation of a slave agent via SSH when adding servers
-* Telemetry endpoint displaying memory usage reported by agents
-
----
-
-## Project Structure
-
-```text
-ftpcluster/
-├── main.py          # FastAPI app and routing
-├── db.py            # SQLite setup
-├── models.py        # SQLAlchemy models
-├── ftp_sync.py      # FTP user management
-├── proxy.py         # Proxy access via central IP
-├── templates/       # HTML UI with Jinja2
-├── static/          # CSS/JS
-└── README.md        # This file
-```
+| Feature            | Description                                                           |
+|--------------------|-----------------------------------------------------------------------|
+| Unified Proxy      | Reach all managed servers through one IP address.                     |
+| Central Accounts   | Manage users and their permissions in one place.                      |
+| Automatic Agents   | Servers receive a telemetry agent via SSH on registration.            |
+| Memory Dashboard   | Agents post RAM usage to the `/telemetry` endpoint.                   |
+| Modern Interface   | Comfortable dark theme for daily use.                                 |
 
 ---
 
-## Setup
+## Quick Start
 
-### Requirements
-
-* Python 3.11+
-* Reachable FTP or SFTP server
-
-### Installation
-
+1. Install dependencies
 ```bash
 pip install -r requirements.txt
-export SECRET_KEY=<random>
+```
+2. Set environment variables
+```bash
+export SECRET_KEY=<secret>
 export FERNET_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')
+export MASTER_URL=http://<hostname>:8080  # URL of this instance
+```
+3. Launch the app
+```bash
 uvicorn main:app --host 0.0.0.0 --port 8080
 ```
 
 ---
 
-## Example
+## Using the System
 
-User "user1" has access to Server2 and Server3. After logging in:
+1. Log in as admin and add your first server. The agent is uploaded automatically and begins reporting memory usage.
+2. Create users and assign them to servers.
+3. Users log in and see their permitted servers as folders.
 
+Example layout for `user1`:
 ```
 /home/user1/
-├── server2/
-└── server3/
+├── serverA/
+└── serverB/
 ```
-
-Requests such as:
-
-```
-/ftp/user1/server2/path/to/file.txt
-```
-
-are internally routed to Server2.
+Any access like `/ftp/user1/serverA/path/to/file.txt` is routed to the correct server.
 
 ---
 
-## Agent and Telemetry
-
-When a new server is registered the application connects via SSH and uploads
-`slave_agent.py`. The agent periodically sends memory usage information back to
-`/telemetry`. The server management page shows the last reported value.
-
----
-
-## API (selection)
-
-### Auth
-
-* `POST /login`
-* `GET /logout`
-
-### User management
-
-* `GET /users`
-* `POST /users`
-
-### Server management
-
-* `GET /servers`
-* `POST /servers`
-
-### Proxy access
-
-* `GET /ftp/{username}/{server_alias}/{path:path}`
-
----
-
-## Security
-
-* Passwords hashed with bcrypt
-* Admin and user passwords stored encrypted (Fernet)
-* Signed login cookies via `SECRET_KEY`
-* Optional: HTTPS with TLS certificate
+## Repository Layout
+```text
+ftpcluster/
+├── main.py          # FastAPI application
+├── db.py            # SQLite initialization
+├── models.py        # Database models
+├── ftp_sync.py      # User management on remote servers
+├── proxy.py         # Proxy endpoint implementation
+├── server_agent.py  # Installs and starts slave agents
+├── slave_agent.py   # Reports telemetry to MASTER_URL
+├── templates/       # Jinja2 HTML templates
+├── static/          # CSS and JavaScript
+└── README.md
+```
 
 ---
 
 ## License
 
 MIT
-
----
-
-## Author
-
-AsaTyr // 2025

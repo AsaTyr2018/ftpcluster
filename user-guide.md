@@ -1,25 +1,32 @@
-# User Guide
+# FTPCluster User Guide
 
-This document is aimed at regular users without admin rights and explains how to use FTPCluster.
+The portal uses a comfortable dark theme and lets you fetch files from multiple servers with a single login.
 
-## Login
+---
 
-1. Open the application's login page (`/`).
+## Sign In
+
+1. Open `http://<server>:8080` in your browser.
 2. Enter your username and password.
-3. After a successful login you will be redirected to the dashboard.
 
-## Dashboard and server access
+---
 
-- The dashboard shows all servers you have access to.
-- Navigate to a server folder to fetch files through the integrated proxy.
-- File URLs follow the pattern:
-  ```
-  /ftp/<username>/<server_alias>/path/to/file
-  ```
-  Example:
-  ```
-  /ftp/user1/server2/data/report.csv
-  ```
-- Download files using a normal browser download or a command line tool such as `curl`.
+## Finding Your Files
 
-If you experience access problems, contact an administrator so the appropriate permissions can be set.
+- After login the dashboard lists the servers you may access.
+- Click a server name to browse its virtual folder.
+- Every file is available via a URL pattern:
+```
+/ftp/<username>/<server_alias>/path/to/file
+```
+Example:
+```
+/ftp/user1/serverA/docs/readme.txt
+```
+Download files with your browser or a tool like `curl`.
+
+---
+
+## Need Help?
+
+If a server is missing or you encounter permission errors, contact your administrator.
