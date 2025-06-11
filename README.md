@@ -19,7 +19,7 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 
 ## Quick Start
 
-1. Install dependencies
+1. Install dependencies (now includes `python-multipart`)
 ```bash
 pip install -r requirements.txt
 ```
@@ -32,6 +32,10 @@ export MASTER_URL=http://<hostname>:8080  # URL of this instance
 3. Launch the app
 ```bash
 uvicorn main:app --host 0.0.0.0 --port 8080
+```
+4. Verify the login page
+```bash
+curl http://localhost:8080/
 ```
 
 ---
