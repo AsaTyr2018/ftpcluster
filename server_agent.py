@@ -1,4 +1,5 @@
 import os
+import io
 import paramiko
 from models import Server
 from security import decrypt_value
@@ -8,11 +9,48 @@ LINK_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), 'datalink_agent.py')
 MASTER_URL = os.environ.get('MASTER_URL', 'http://localhost:8080')
 
 
-def install_agent(server: Server):
+def generate_setup_script(server: Server) -> str:
+    """Return a shell script for preparing the server."""
+    return f"""#!/bin/bash
+set -e
+ADMIN_USER={server.admin_user}
+MASTER_URL={MASTER_URL}
+ALIAS={server.alias}
+
+if [ \"$EUID\" -ne 0 ]; then
+  echo 'Run as root'
+  exit 1
+fi
+
+id $ADMIN_USER >/dev/null 2>&1 || useradd -m -s /bin/bash $ADMIN_USER
+passwd -l $ADMIN_USER
+
+SUDO_FILE=/etc/sudoers.d/ftpcluster-$ADMIN_USER
+echo "$ADMIN_USER ALL=(ALL) NOPASSWD:ALL" > $SUDO_FILE
+chmod 440 $SUDO_FILE
+
+su - $ADMIN_USER -c 'ssh-keygen -t rsa -b 2048 -N "" -f ~/.ssh/id_rsa'
+cat /home/$ADMIN_USER/.ssh/id_rsa.pub >> /home/$ADMIN_USER/.ssh/authorized_keys
+chown $ADMIN_USER:$ADMIN_USER /home/$ADMIN_USER/.ssh/authorized_keys
+chmod 600 /home/$ADMIN_USER/.ssh/authorized_keys
+
+curl -F alias=$ALIAS -F key=@/home/$ADMIN_USER/.ssh/id_rsa $MASTER_URL/register_key
+"""
+
+
+def install_agent(server: Server, key: str | None = None):
     """Install and start the slave agent on the given server via SSH."""
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(server.host, username=server.admin_user, password=decrypt_value(server.admin_pass))
+
+    if key is None and server.ssh_key:
+        key = decrypt_value(server.ssh_key)
+
+    if key:
+        pkey = paramiko.RSAKey.from_private_key(io.StringIO(key))
+        ssh.connect(server.host, username=server.admin_user, pkey=pkey)
+    else:
+        ssh.connect(server.host, username=server.admin_user, password=decrypt_value(server.admin_pass))
     sftp = ssh.open_sftp()
     remote_agent = '/tmp/slave_agent.py'
     remote_link = '/tmp/datalink_agent.py'
