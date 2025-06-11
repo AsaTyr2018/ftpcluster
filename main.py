@@ -3,6 +3,8 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from passlib.hash import bcrypt
 
+from security import encrypt_value, decrypt_value, sign_username, verify_username
+
 from db import Base, engine, get_db
 from sqlalchemy.orm import Session
 from models import User, Server, Permission
@@ -26,13 +28,14 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
     if not user or not bcrypt.verify(password, user.password_hash):
         return RedirectResponse("/", status_code=302)
     response = RedirectResponse("/dashboard", status_code=302)
-    response.set_cookie(key="user", value=username)
+    signed = sign_username(username)
+    response.set_cookie(key="session", value=signed, httponly=True)
     return response
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request, db: Session = Depends(get_db)):
-    username = request.cookies.get("user")
+    username = verify_username(request.cookies.get("session"))
     if not username:
         return RedirectResponse("/", status_code=302)
     user = db.query(User).filter_by(username=username).first()
@@ -41,7 +44,10 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
 
 
 @app.get("/ftp/{username}/{srv_alias}/{path:path}")
-async def ftp_proxy(username: str, srv_alias: str, path: str):
+async def ftp_proxy(request: Request, username: str, srv_alias: str, path: str):
+    session_user = verify_username(request.cookies.get("session"))
+    if session_user != username:
+        return RedirectResponse("/", status_code=302)
     return proxy_ftp(username, srv_alias, path)
 
 
@@ -57,7 +63,8 @@ async def create_user(username: str = Form(...), password: str = Form(...), db: 
 
 @app.post("/servers")
 async def create_server(alias: str = Form(...), host: str = Form(...), admin_user: str = Form(...), admin_pass: str = Form(...), db: Session = Depends(get_db)):
-    srv = Server(alias=alias, host=host, admin_user=admin_user, admin_pass=admin_pass)
+    enc_pass = encrypt_value(admin_pass)
+    srv = Server(alias=alias, host=host, admin_user=admin_user, admin_pass=enc_pass)
     db.add(srv)
     db.commit()
     db.refresh(srv)
@@ -66,7 +73,8 @@ async def create_server(alias: str = Form(...), host: str = Form(...), admin_use
 
 @app.post("/permissions")
 async def create_permission(user_id: int = Form(...), server_id: int = Form(...), user_pass: str = Form(...), db: Session = Depends(get_db)):
-    perm = Permission(user_id=user_id, server_id=server_id, user_pass=user_pass)
+    enc_pass = encrypt_value(user_pass)
+    perm = Permission(user_id=user_id, server_id=server_id, user_pass=enc_pass)
     db.add(perm)
     db.commit()
     db.refresh(perm)

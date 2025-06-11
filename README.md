@@ -41,6 +41,8 @@ ftpcluster/
 
 ```bash
 pip install -r requirements.txt
+export SECRET_KEY=<random>
+export FERNET_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')
 uvicorn main:app --host 0.0.0.0 --port 8080
 ```
 
@@ -92,6 +94,8 @@ werden intern zu Server2 geroutet.
 ## Sicherheit
 
 * Passwörter gehashed mit bcrypt
+* Admin- und Benutzerpasswörter werden verschlüsselt gespeichert (Fernet)
+* Signierte Login-Cookies über `SECRET_KEY`
 * Optional: HTTPS mit TLS-Zertifikat
 
 ---
