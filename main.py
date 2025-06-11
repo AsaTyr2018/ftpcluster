@@ -66,6 +66,12 @@ async def create_user(username: str = Form(...), password: str = Form(...), db: 
     return {"id": user.id, "username": user.username}
 
 
+@app.get("/users", response_class=HTMLResponse)
+async def list_users(request: Request, db: Session = Depends(get_db)):
+    users = db.query(User).all()
+    return templates.TemplateResponse("users.html", {"request": request, "users": users})
+
+
 @app.post("/servers")
 async def create_server(alias: str = Form(...), host: str = Form(...), admin_user: str = Form("ftpadmin"), db: Session = Depends(get_db)):
     srv = Server(alias=alias, host=host, admin_user=admin_user, admin_pass="")
