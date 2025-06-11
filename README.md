@@ -1,41 +1,41 @@
 # FTPCluster
 
-**Zentrale FTP-Benutzerverwaltung mit Proxy-Zugriff auf mehrere Server über eine einzige IP-Adresse.**
+**Central FTP user management with proxy access to multiple servers through a single IP address.**
 
 ---
 
 ## Features
 
-* Webinterface zur Benutzer- und Serververwaltung
-* Benutzer-Zugriffsrechte pro Server konfigurierbar
-* Zentrale Authentifizierung mit Passwort-Hashing
-* Zugriff über zentrale IP per Proxy-Routing
-* Virtuelle Subfolder für Benutzer gemäß Server-Zuweisung
+* Web interface for managing users and servers
+* User access rights configurable per server
+* Central authentication with password hashing
+* Access via a single IP through proxy routing
+* Virtual subfolders for users based on server assignment
 
 ---
 
-## Projektstruktur
+## Project Structure
 
 ```text
 ftpcluster/
-├── main.py          # FastAPI App & Routing
-├── db.py            # SQLite Setup
-├── models.py        # SQLAlchemy Modelle
-├── ftp_sync.py      # FTP Benutzerverwaltung
-├── proxy.py         # Proxyzugriff via zentrale IP
-├── templates/       # HTML UI via Jinja2
+├── main.py          # FastAPI app and routing
+├── db.py            # SQLite setup
+├── models.py        # SQLAlchemy models
+├── ftp_sync.py      # FTP user management
+├── proxy.py         # Proxy access via central IP
+├── templates/       # HTML UI with Jinja2
 ├── static/          # CSS/JS
-└── README.md        # Diese Datei
+└── README.md        # This file
 ```
 
 ---
 
 ## Setup
 
-### Voraussetzungen
+### Requirements
 
 * Python 3.11+
-* FTP oder SFTP-Server erreichbar
+* Reachable FTP or SFTP server
 
 ### Installation
 
@@ -48,9 +48,9 @@ uvicorn main:app --host 0.0.0.0 --port 8080
 
 ---
 
-## Beispiel
+## Example
 
-Benutzer "user1" hat Zugriff auf Server2 und Server3. Nach dem Login:
+User "user1" has access to Server2 and Server3. After logging in:
 
 ```
 /home/user1/
@@ -58,54 +58,54 @@ Benutzer "user1" hat Zugriff auf Server2 und Server3. Nach dem Login:
 └── server3/
 ```
 
-Zugriffe wie:
+Requests such as:
 
 ```
 /ftp/user1/server2/path/to/file.txt
 ```
 
-werden intern zu Server2 geroutet.
+are internally routed to Server2.
 
 ---
 
-## API (Auswahl)
+## API (selection)
 
 ### Auth
 
 * `POST /login`
 * `GET /logout`
 
-### Benutzerverwaltung
+### User management
 
 * `GET /users`
 * `POST /users`
 
-### Serververwaltung
+### Server management
 
 * `GET /servers`
 * `POST /servers`
 
-### Proxy-Zugriff
+### Proxy access
 
 * `GET /ftp/{username}/{server_alias}/{path:path}`
 
 ---
 
-## Sicherheit
+## Security
 
-* Passwörter gehashed mit bcrypt
-* Admin- und Benutzerpasswörter werden verschlüsselt gespeichert (Fernet)
-* Signierte Login-Cookies über `SECRET_KEY`
-* Optional: HTTPS mit TLS-Zertifikat
+* Passwords hashed with bcrypt
+* Admin and user passwords stored encrypted (Fernet)
+* Signed login cookies via `SECRET_KEY`
+* Optional: HTTPS with TLS certificate
 
 ---
 
-## Lizenz
+## License
 
 MIT
 
 ---
 
-## Autor
+## Author
 
 AsaTyr // 2025

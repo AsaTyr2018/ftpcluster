@@ -23,7 +23,7 @@ def proxy_ftp(username: str, srv_alias: str, path: str):
     perm = get_permission(db, username, srv_alias)
     if not perm:
         db.close()
-        raise HTTPException(status_code=403, detail="Kein Zugriff")
+        raise HTTPException(status_code=403, detail="No access")
     srv = db.query(Server).filter_by(alias=srv_alias).first()
     db.close()
 

@@ -1,25 +1,25 @@
 # User Guide
 
-Dieses Dokument richtet sich an reguläre Benutzer ohne Adminrechte und erklärt die Nutzung von FTPCluster.
+This document is aimed at regular users without admin rights and explains how to use FTPCluster.
 
-## Anmeldung
+## Login
 
-1. Öffnen Sie die Login-Seite der Anwendung (`/`).
-2. Geben Sie Ihren Benutzernamen und Ihr Passwort ein.
-3. Nach erfolgreichem Login werden Sie auf das Dashboard weitergeleitet.
+1. Open the application's login page (`/`).
+2. Enter your username and password.
+3. After a successful login you will be redirected to the dashboard.
 
-## Dashboard und Serverzugriff
+## Dashboard and server access
 
-- Auf dem Dashboard werden Ihnen alle Server angezeigt, auf die Sie Zugriff haben.
-- Navigieren Sie zu einem Serverordner, um Dateien über den integrierten Proxy abzurufen.
-- Datei-URLs folgen dem Schema:
+- The dashboard shows all servers you have access to.
+- Navigate to a server folder to fetch files through the integrated proxy.
+- File URLs follow the pattern:
   ```
-  /ftp/<username>/<server_alias>/<pfad/zur/datei>
+  /ftp/<username>/<server_alias>/path/to/file
   ```
-  Beispiel:
+  Example:
   ```
   /ftp/user1/server2/data/report.csv
   ```
-- Laden Sie Dateien mit einem normalen Browserdownload oder einem Kommandozeilenwerkzeug wie `curl` herunter.
+- Download files using a normal browser download or a command line tool such as `curl`.
 
-Bei Zugriffsproblemen wenden Sie sich an einen Administrator, damit die entsprechenden Berechtigungen gesetzt werden können.
+If you experience access problems, contact an administrator so the appropriate permissions can be set.

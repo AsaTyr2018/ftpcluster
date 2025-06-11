@@ -5,13 +5,13 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Willkommen {{ user.username }}</h1>
-    <h2>Deine Server</h2>
+    <h1>Welcome {{ user.username }}</h1>
+    <h2>Your servers</h2>
     <ul>
         {% for perm in permissions %}
         <li>{{ perm.server.alias }}</li>
         {% else %}
-        <li>Keine Serverzuweisung</li>
+        <li>No server assignment</li>
         {% endfor %}
     </ul>
 </body>

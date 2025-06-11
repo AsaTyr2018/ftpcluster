@@ -1,77 +1,65 @@
-# Projekt: FTPCluster - Zentrale FTP-Benutzerverwaltung mit Proxy-Mapping
+# Project: FTPCluster - Central FTP User Management with Proxy Mapping
 
-## Überblick
+## Overview
 
-FTPCluster ist eine zentrale Verwaltungsinstanz zur Benutzer- und Serververwaltung in einem verteilten FTP-Cluster. Ziel ist es, Benutzern über eine einzige IP-Adresse Zugriff auf mehrere FTP-Server zu geben, entsprechend individuell zugewiesener Rechte.
+FTPCluster acts as a central management instance for users and servers in a distributed FTP cluster. The aim is to provide users access to multiple FTP servers through a single IP address while respecting individually assigned permissions.
 
-## Hauptfunktionen
+## Main Features
 
-* Webinterface zur Verwaltung von Benutzern und Servern
-* Zentrale Authentifizierung und Benutzer-Synchronisation auf Zielservern
-* Konfigurierbares Mapping von Benutzern zu Servern
-* Reverse-Proxy-Zugriff auf entfernte Server über zentrale IP
-* Virtuelle Ordnerstruktur für Benutzerzugriff
+* Web interface for managing users and servers
+* Central authentication and user synchronization on target servers
+* Configurable mapping of users to servers
+* Reverse proxy access to remote servers via a central IP
+* Virtual folder structure for user access
 
-## Architektur
+## Architecture
 
-### Komponenten
+### Components
 
-1. **FastAPI Backend**
-
-   * REST API & HTML-Endpoints (Jinja2)
-   * Benutzerverwaltung (Anmeldung, Rechte, Sessions)
-
-2. **SQLite Datenbank**
-
-   * Tabellen: `User`, `Server`, `Permission`
-
-3. **FTP-/SFTP-Module**
-
-   * Verbindung zu Remote-Servern über `ftplib` oder `paramiko`
-
-4. **Proxy-Interface**
-
-   * Routen: `/ftp/{username}/{server_alias}/{path}`
-   * Dynamische Zugriffskontrolle pro Benutzer
-
+1. **FastAPI backend**
+   * REST API and HTML endpoints (Jinja2)
+   * User management (login, permissions, sessions)
+2. **SQLite database**
+   * Tables: `User`, `Server`, `Permission`
+3. **FTP/SFTP modules**
+   * Connection to remote servers via `ftplib` or `paramiko`
+4. **Proxy interface**
+   * Routes: `/ftp/{username}/{server_alias}/{path}`
+   * Dynamic access control per user
 5. **Frontend**
+   * Bootstrap-based UI
+   * Pages: login, dashboard, user management, server management
 
-   * Bootstrap-basiertes UI
-   * Seiten: Login, Dashboard, Benutzerverwaltung, Serververwaltung
+## Workflow
 
-## Ablauf
+1. Admin creates users and assigns them to servers
+2. Users log in through the central web interface
+3. The virtual folder structure shows assigned servers as subfolders
+4. File access is handled centrally and forwarded through the proxy
 
-1. Admin erstellt Benutzer und ordnet ihnen Server zu
-2. Benutzer meldet sich an zentraler Weboberfläche an
-3. Virtuelle Ordnerstruktur zeigt freigegebene Server als Subordner
-4. Zugriffe auf Dateien werden zentral verarbeitet und über Proxy weitergeleitet
+## Data Model
 
-## Datenmodell
-
-### Tabelle: `User`
-
+### Table: `User`
 * id (int)
 * username (str)
-* password\_hash (str)
+* password_hash (str)
 
-### Tabelle: `Server`
-
+### Table: `Server`
 * id (int)
 * alias (str)
 * host (str)
-* admin\_user (str)
-* admin\_pass (str)
+* admin_user (str)
+* admin_pass (str)
 
-### Tabelle: `Permission`
-
+### Table: `Permission`
 * id (int)
-* user\_id (FK -> User.id)
-* server\_id (FK -> Server.id)
-* user\_pass (str)
+* user_id (FK -> User.id)
+* server_id (FK -> Server.id)
+* user_pass (str)
 
-## Beispiel
+## Example
 
-**User1** hat Zugriff auf Server2 und Server3. Beim Login sieht er:
+**User1** has access to Server2 and Server3. On login they see:
 
 ```
 /home/user1/
@@ -79,74 +67,70 @@ FTPCluster ist eine zentrale Verwaltungsinstanz zur Benutzer- und Serververwaltu
 └── server3/
 ```
 
-Zugriff auf `/ftp/user1/server2/files/data.csv` wird intern über Proxy zu Server2 weitergeleitet.
+Accessing `/ftp/user1/server2/files/data.csv` is internally forwarded to Server2.
 
-## Sicherheit
+## Security
 
-* Passwort-Hashes mit bcrypt
-* JWT-Token oder session-based Auth
-* HTTPS empfohlen (uvicorn + TLS)
+* Password hashes with bcrypt
+* JWT tokens or session-based authentication
+* HTTPS recommended (uvicorn + TLS)
 
-## Erweiterungen
+## Extensions
 
-* Zwei-Faktor-Authentifizierung
-* Audit-Logging
-* API für externe Anbindung
+* Two-factor authentication
+* Audit logging
+* API for external integration
 
 ## Deployment
 
-* Systemvoraussetzungen: Python 3.11+, uvicorn, SQLite, FTP/SFTP Server
+* Requirements: Python 3.11+, uvicorn, SQLite, FTP/SFTP server
 * Start: `uvicorn main:app --host 0.0.0.0 --port 8080`
-* Optionale TLS-Konfiguration für produktive Umgebung
+* Optional TLS configuration for production
 
-## Lizenz
+## License
 
-MIT-Lizenz
+MIT License
 
 ---
 
-# Technische Dokumentation
+# Technical Documentation
 
-## Projektstruktur
+## Project Structure
 
 ```
 ftpcluster/
-├── main.py               # Einstiegspunkt, FastAPI-App mit Routing
-├── db.py                 # DB-Initialisierung & Verbindungen
-├── models.py             # SQLAlchemy-Modelle (User, Server, Permission)
-├── ftp_sync.py           # FTP-Operationen: Benutzer anlegen/löschen
-├── proxy.py              # Zugriff auf Remote-Server über zentrale Instanz
-├── templates/            # Jinja2 Templates für HTML-UI
+├── main.py               # entry point, FastAPI app with routing
+├── db.py                 # DB initialization & connections
+├── models.py             # SQLAlchemy models (User, Server, Permission)
+├── ftp_sync.py           # FTP operations: create/delete users
+├── proxy.py              # access remote servers through central instance
+├── templates/            # Jinja2 templates for HTML UI
 ├── static/               # CSS/JS
-└── README.md             # Anleitung
+└── README.md             # instructions
 ```
 
-## API-Endpunkte
+## API Endpoints
 
-### Benutzer
+### Users
+* `POST /login` - authentication
+* `GET /logout` - log out
+* `GET /users` - list users (admin)
+* `POST /users` - create user
 
-* `POST /login` - Authentifizierung
-* `GET /logout` - Logout
-* `GET /users` - Benutzerliste (Admin)
-* `POST /users` - Benutzer erstellen
+### Servers
+* `GET /servers` - list servers (admin)
+* `POST /servers` - register new server
 
-### Server
+### Permissions
+* `POST /permissions` - create user/server association
 
-* `GET /servers` - Serverliste (Admin)
-* `POST /servers` - Neuen Server registrieren
+### Proxy Access
+* `GET /ftp/{username}/{server_alias}/{path:path}` - access via central IP
 
-### Berechtigungen
-
-* `POST /permissions` - Benutzer/Server-Zuordnung erstellen
-
-### Proxy-Zugriff
-
-* `GET /ftp/{username}/{server_alias}/{path:path}` - Zugriff über zentrale IP
-
-## FTP-Logik (`ftp_sync.py`)
-
+## FTP Logic (`ftp_sync.py`)
 ```python
 from ftplib import FTP
+
 
 def create_user_on_servers(username, password, server_list):
     for srv in server_list:
@@ -154,19 +138,18 @@ def create_user_on_servers(username, password, server_list):
         ftp.login(srv.admin_user, srv.admin_pass)
         try:
             ftp.mkd(username)
-        except:
+        except Exception:
             pass
         ftp.quit()
 ```
 
 ## Reverse Proxy (`proxy.py`)
-
 ```python
 @app.get('/ftp/{user}/{srv_alias}/{path:path}')
 async def proxy_ftp(user, srv_alias, path):
     perm = db.get_permission(user, srv_alias)
     if not perm:
-        raise HTTPException(403, 'Kein Zugriff')
+        raise HTTPException(403, 'No access')
     srv = db.get_server(srv_alias)
     ftp = FTP(srv.host)
     ftp.login(user, perm.user_pass)
@@ -175,17 +158,15 @@ async def proxy_ftp(user, srv_alias, path):
     return Response(bio.getvalue(), media_type='application/octet-stream')
 ```
 
-## Datenbank-Setup (`db.py`)
-
+## Database Setup (`db.py`)
 ```python
 from sqlalchemy import create_engine
 engine = create_engine('sqlite:///ftpcluster.db')
 Base.metadata.create_all(engine)
 ```
 
-## UI-Komponenten (Jinja2)
-
-* `login.html` - Formular für Login
-* `dashboard.html` - Übersicht für Benutzer
-* `users.html` - Benutzerverwaltung
-* `servers.html` - Serververwaltung
+## UI Components (Jinja2)
+* `login.html` - login form
+* `dashboard.html` - user overview
+* `users.html` - user management
+* `servers.html` - server management
