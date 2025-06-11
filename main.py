@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from passlib.hash import bcrypt
+from pydantic import BaseModel
 
 from security import encrypt_value, decrypt_value, sign_username, verify_username
 
@@ -10,6 +11,7 @@ from db import Base, engine, get_db
 from sqlalchemy.orm import Session
 from models import User, Server, Permission
 from proxy import proxy_ftp
+from server_agent import install_agent
 
 app = FastAPI()
 
@@ -70,7 +72,17 @@ async def create_server(alias: str = Form(...), host: str = Form(...), admin_use
     db.add(srv)
     db.commit()
     db.refresh(srv)
+    try:
+        install_agent(srv)
+    except Exception:
+        pass
     return {"id": srv.id, "alias": srv.alias}
+
+
+@app.get("/servers", response_class=HTMLResponse)
+async def list_servers(request: Request, db: Session = Depends(get_db)):
+    servers = db.query(Server).all()
+    return templates.TemplateResponse("servers.html", {"request": request, "servers": servers})
 
 
 @app.post("/permissions")
@@ -81,3 +93,17 @@ async def create_permission(user_id: int = Form(...), server_id: int = Form(...)
     db.commit()
     db.refresh(perm)
     return {"id": perm.id}
+
+
+class Telemetry(BaseModel):
+    alias: str
+    mem_percent: int
+
+
+@app.post("/telemetry")
+async def telemetry(data: Telemetry, db: Session = Depends(get_db)):
+    srv = db.query(Server).filter_by(alias=data.alias).first()
+    if srv:
+        srv.memory_usage = data.mem_percent
+        db.commit()
+    return {"status": "ok"}
