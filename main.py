@@ -11,7 +11,7 @@ from db import Base, engine, get_db
 from sqlalchemy.orm import Session
 from models import User, Server, Permission
 from proxy import proxy_ftp
-from server_agent import install_agent, generate_setup_script
+from agents.server_agent import install_agent, generate_setup_script
 from ftp_sync import create_user_via_link
 
 app = FastAPI()

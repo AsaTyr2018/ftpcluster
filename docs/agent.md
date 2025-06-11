@@ -102,8 +102,12 @@ ftpcluster/
 ├── main.py               # entry point, FastAPI app with routing
 ├── db.py                 # DB initialization & connections
 ├── models.py             # SQLAlchemy models (User, Server, Permission)
+├── security.py           # Session and crypto helpers
 ├── ftp_sync.py           # FTP operations: create/delete users
 ├── proxy.py              # access remote servers through central instance
+├── agents/               # Python agents for remote servers
+├── scripts/              # Deployment helpers
+├── docs/                 # Guides and tech docs
 ├── templates/            # Jinja2 templates for HTML UI
 ├── static/               # CSS/JS
 └── README.md             # instructions
