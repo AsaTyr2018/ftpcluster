@@ -30,7 +30,9 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 ---
 ## Installation via Script
 
-Deploy the master server automatically with a single command:
+The easiest way to get started is to run the setup script. It clones this
+repository, installs the Python dependencies and configures a systemd service so
+FTPCluster starts automatically on boot.
 
 ```bash
 curl -s https://raw.githubusercontent.com/AsaTyr2018/ftpcluster/main/scripts/setup_master.sh | sudo bash
@@ -39,26 +41,14 @@ curl -s https://raw.githubusercontent.com/AsaTyr2018/ftpcluster/main/scripts/set
 ---
 
 ## Quick Start
-(See `docs/admin-guide.md` for detailed instructions.)
 
-1. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-2. Set environment variables
-```bash
-export SECRET_KEY=<secret>
-export FERNET_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')
-export MASTER_URL=http://<hostname>:8080  # URL of this instance
-```
-3. Launch the app
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8080
-```
-4. Verify the login page
-```bash
-curl http://localhost:8080/
-```
+1. Run the installation command above.
+2. Wait for the script to print the generated admin password.
+3. Open `http://<server>:8080` in your browser and log in as **admin**.
+
+That's it! The service is already running in the background thanks to the
+systemd unit created by the script. See `docs/admin-guide.md` if you prefer a
+manual setup.
 
 ---
 
