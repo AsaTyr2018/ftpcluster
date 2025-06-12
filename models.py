@@ -19,6 +19,10 @@ class Server(Base):
     admin_user = Column(String, nullable=False)
     admin_pass = Column(String, nullable=False)
     ssh_key = Column(String, nullable=True)
+    slave_id = Column(String, unique=True, nullable=True)
+    api_key = Column(String, nullable=True)
+    public_key = Column(String, nullable=True)
+    status = Column(String, nullable=True)
     memory_usage = Column(Integer, default=0)
 
     permissions = relationship("Permission", back_populates="server")

@@ -12,6 +12,7 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 - New `update_master.sh` script upgrades existing installations.
 - UI now has navigation links, footers and a user list.
 - Bcrypt version pinned to maintain passlib compatibility.
+- Added `generate_slave_bundle.py` for zero-touch slave registration.
 
 ---
 
