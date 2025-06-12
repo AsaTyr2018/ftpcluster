@@ -1,69 +1,62 @@
-# FTPCluster Administration
+# FTPCluster Administration Guide
 
-Welcome, administrator! This guide covers server installation, agent handling and common tasks.
+Welcome to FTPCluster. This document explains how to install the master server, register slaves and manage users.
 
 ---
 
-## 1. Installation
+## 1. Installing the Master
 
-### Requirements
-- Python 3.11+
-- Access to one or more FTP/SFTP servers
+### Recommended: setup script
+Run the provided script as **root** to deploy FTPCluster and create a systemd service:
 
-### Steps
+```bash
+curl -s https://raw.githubusercontent.com/AsaTyr2018/ftpcluster/main/scripts/setup_master.sh | sudo bash
+```
+
+The script clones the repository to `/opt/ftpcluster`, creates a Python virtual environment and prints the generated admin password. After completion the service listens on port `8080`.
+
+### Manual installation
+If you prefer a manual setup, install the requirements and define the environment variables `SECRET_KEY`, `FERNET_KEY` and `MASTER_URL`:
+
 ```bash
 pip install -r requirements.txt
-export SECRET_KEY=<random>
+export SECRET_KEY=$(openssl rand -hex 16)
 export FERNET_KEY=$(python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())')
 export MASTER_URL=http://<this_host>:8080
 uvicorn main:app --host 0.0.0.0 --port 8080
 ```
-The `MASTER_URL` must point to the running instance so slave agents can post telemetry.
 
 ---
 
-## Preparation
+## 2. Upgrading an Installation
 
-When adding a new server, the master provides a shell script that must be run on
-the target system as `root`. This script
-
-1. creates the specified admin user and locks its password,
-2. adds the user to `/etc/sudoers.d/` with `NOPASSWD`,
-3. generates an SSH key pair and sends the private key to the master.
-
-The master stores the key for future communication and then automatically installs
-the required packages and agents.
-
-Example workflow:
+To update a running instance use `scripts/update_master.sh`. The script pulls the latest code, migrates the database and restarts the service.
 
 ```bash
-curl -F alias=myserver -F host=10.0.0.5 http://MASTER/servers > setup.sh
-sudo bash setup.sh
+sudo scripts/update_master.sh
 ```
 
-After running the script, the server will appear in the list.
+---
+
+## 3. Registering Servers
+
+1. Log in as **admin** and open **Servers**.
+2. Enter the alias and host name to create a new entry.
+3. Save the generated shell script on the target server and run it as `root`.
+4. The script installs Python, `vsftpd` and both agents. Telemetry appears once the agents start.
+
+Alternatively you can create a zero-touch bundle using `generate_slave_bundle.py` and run `ftpcluster-setup.sh` on the slave as described in `docs/slave-workflow.md`.
 
 ---
 
-## 2. Registering a Server
+## 4. Managing Users
 
-1. Log in as admin and open **Servers**.
-2. Choose **Add** and provide host and alias.
-3. Save the generated script on the target server and run it as `root`.
-4. The master then installs the required packages and starts the agents (datalink port 9000).
-5. The new server will appear in the list and show its latest RAM, CPU, user and disk statistics.
+Use the **Users** page to create accounts. When assigning a server you must also provide the FTP password that will be deployed via the datalink agent.
 
 ---
 
-## 3. Managing Users
+## 5. Monitoring
 
-- Use the **Users** page to create accounts and assign servers.
-- Users only see the servers you select.
-
----
-
-## 4. Monitoring
-
-The **Servers** page displays telemetry from agents including memory, CPU, connected users and disk usage. If a server stops reporting, check connectivity or reinstall the agent from the same page.
+The **Servers** page lists RAM, CPU, user count and disk usage reported by each slave. If a server stops reporting you can reinstall the agents from the same page.
 
 Enjoy your streamlined FTP management!

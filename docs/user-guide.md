@@ -1,6 +1,6 @@
 # FTPCluster User Guide
 
-The portal uses a comfortable dark theme and lets you fetch files from multiple servers with a single login.
+FTPCluster lets you reach multiple FTP servers with a single login. After signing in you will see only the servers assigned to you.
 
 ---
 
@@ -11,22 +11,26 @@ The portal uses a comfortable dark theme and lets you fetch files from multiple 
 
 ---
 
-## Finding Your Files
+## Accessing Files
 
-- After login the dashboard lists the servers you may access.
+- The dashboard lists all servers you can reach.
 - Click a server name to browse its virtual folder.
-- Every file is available via a URL pattern:
+- Every file follows the pattern:
+
 ```
 /ftp/<username>/<server_alias>/path/to/file
 ```
+
 Example:
+
 ```
 /ftp/user1/serverA/docs/readme.txt
 ```
-Download files with your browser or a tool like `curl`.
+
+Use your browser or a tool like `curl` to download files.
 
 ---
 
 ## Need Help?
 
-If a server is missing or you encounter permission errors, contact your administrator.
+If a server is missing or you see permission errors, please contact your administrator.
