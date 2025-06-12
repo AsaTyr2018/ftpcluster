@@ -34,7 +34,7 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
         return RedirectResponse("/", status_code=302)
     response = RedirectResponse("/dashboard", status_code=302)
     signed = sign_username(username)
-    response.set_cookie(key="session", value=signed, httponly=True)
+    response.set_cookie(key="session", value=signed, httponly=True, secure=True)
     return response
 
 

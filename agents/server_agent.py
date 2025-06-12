@@ -41,7 +41,8 @@ curl -F alias=$ALIAS -F key=@/home/$ADMIN_USER/.ssh/id_rsa $MASTER_URL/register_
 def install_agent(server: Server, key: str | None = None):
     """Install and start the slave agent on the given server via SSH."""
     ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.load_system_host_keys()
+    ssh.set_missing_host_key_policy(paramiko.RejectPolicy())
 
     if key is None and server.ssh_key:
         key = decrypt_value(server.ssh_key)
