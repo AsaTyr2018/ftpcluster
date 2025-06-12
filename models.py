@@ -24,6 +24,9 @@ class Server(Base):
     public_key = Column(String, nullable=True)
     status = Column(String, nullable=True)
     memory_usage = Column(Integer, default=0)
+    cpu_usage = Column(Integer, default=0)
+    connected_users = Column(Integer, default=0)
+    root_usage = Column(Integer, default=0)
 
     permissions = relationship("Permission", back_populates="server")
 

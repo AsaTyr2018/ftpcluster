@@ -51,7 +51,7 @@ After running the script, the server will appear in the list.
 2. Choose **Add** and provide host and alias.
 3. Save the generated script on the target server and run it as `root`.
 4. The master then installs the required packages and starts the agents (datalink port 9000).
-5. The new server will appear in the list and show its last reported memory usage.
+5. The new server will appear in the list and show its latest RAM, CPU, user and disk statistics.
 
 ---
 
@@ -64,6 +64,6 @@ After running the script, the server will appear in the list.
 
 ## 4. Monitoring
 
-The **Servers** page displays telemetry from agents. If a server stops reporting, check connectivity or reinstall the agent from the same page.
+The **Servers** page displays telemetry from agents including memory, CPU, connected users and disk usage. If a server stops reporting, check connectivity or reinstall the agent from the same page.
 
 Enjoy your streamlined FTP management!

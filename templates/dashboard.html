@@ -14,7 +14,11 @@
         <h2>Your servers</h2>
         <ul>
             {% for perm in permissions %}
-            <li>{{ perm.server.alias }}</li>
+            <li>
+                {{ perm.server.alias }} - RAM {{ perm.server.memory_usage }}% |
+                CPU {{ perm.server.cpu_usage }}% | Users {{ perm.server.connected_users }} |
+                Disk {{ perm.server.root_usage }}%
+            </li>
             {% else %}
             <li>No server assignment</li>
             {% endfor %}

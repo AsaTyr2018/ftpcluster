@@ -124,6 +124,9 @@ async def register_key(alias: str = Form(...), key: str = Form(...), db: Session
 class Telemetry(BaseModel):
     alias: str
     mem_percent: int
+    cpu_percent: int
+    user_count: int
+    storage_percent: int
 
 
 @app.post("/telemetry")
@@ -131,6 +134,9 @@ async def telemetry(data: Telemetry, db: Session = Depends(get_db)):
     srv = db.query(Server).filter_by(alias=data.alias).first()
     if srv:
         srv.memory_usage = data.mem_percent
+        srv.cpu_usage = data.cpu_percent
+        srv.connected_users = data.user_count
+        srv.root_usage = data.storage_percent
         db.commit()
     return {"status": "ok"}
 
