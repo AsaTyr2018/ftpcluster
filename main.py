@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, Request, Form
+from fastapi import FastAPI, Depends, Request, Form, Header
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -132,4 +132,31 @@ async def telemetry(data: Telemetry, db: Session = Depends(get_db)):
     if srv:
         srv.memory_usage = data.mem_percent
         db.commit()
+    return {"status": "ok"}
+
+
+class RegisterData(BaseModel):
+    slave_id: str
+    pubkey: str
+    hostname: str
+    ip: str
+
+
+@app.post("/api/register")
+async def register_slave(
+    data: RegisterData,
+    request: Request,
+    authorization: str | None = Header(None),
+    db: Session = Depends(get_db),
+):
+    if not authorization or not authorization.startswith("Bearer "):
+        return {"status": "unauthorized"}
+    token = authorization.split(" ", 1)[1]
+    srv = db.query(Server).filter_by(slave_id=data.slave_id).first()
+    if not srv or srv.api_key != token:
+        return {"status": "invalid"}
+    srv.public_key = data.pubkey
+    srv.host = data.ip or srv.host
+    srv.status = "ready"
+    db.commit()
     return {"status": "ok"}
