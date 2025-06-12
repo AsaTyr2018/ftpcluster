@@ -22,7 +22,9 @@
         <h2>Registered Servers</h2>
         <ul>
             {% for srv in servers %}
-            <li>{{ srv.alias }} - Memory {{ srv.memory_usage }}%</li>
+            <li>
+                {{ srv.alias }} - RAM {{ srv.memory_usage }}% | CPU {{ srv.cpu_usage }}% | Users {{ srv.connected_users }} | Disk {{ srv.root_usage }}%
+            </li>
             {% endfor %}
         </ul>
         {% endif %}

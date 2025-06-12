@@ -24,7 +24,7 @@ FTPCluster bundles user accounts, permissions and proxy access into a single dar
 | Central Accounts   | Manage users and their permissions in one place.                      |
 | Automatic Agents   | Servers receive telemetry and datalink agents via SSH on registration. |
 | Zero-Touch Setup   | Python environment and FTP server are installed automatically. |
-| Memory Dashboard   | Agents post RAM usage to the `/telemetry` endpoint.                   |
+| Usage Dashboard    | Agents post RAM, CPU, user count and disk usage to the `/telemetry` endpoint. |
 | Modern Interface   | Comfortable dark theme for daily use.                                 |
 
 ---
@@ -65,7 +65,7 @@ curl http://localhost:8080/
 ## Using the System
 
 1. Log in as admin and open **Servers**. Generate the setup script and run it on the target machine.
-2. The script installs slave and datalink agents which start reporting memory usage.
+2. The script installs slave and datalink agents which start reporting memory, CPU and disk statistics.
 3. Create users and assign them to servers.
 4. Users log in and see their permitted servers as folders.
 
