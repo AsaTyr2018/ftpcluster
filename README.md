@@ -38,6 +38,15 @@ FTPCluster starts automatically on boot.
 curl -s https://raw.githubusercontent.com/AsaTyr2018/ftpcluster/main/scripts/setup_master.sh | sudo bash
 ```
 
+## Docker Image
+
+This repository includes a simple Dockerfile that installs Firefox via the `firefox-esr` package.
+Build the container with:
+
+```bash
+docker build -t ftpcluster .
+```
+
 ---
 
 ## Quick Start
